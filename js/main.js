@@ -18,7 +18,7 @@ var mainState = {
 	game.load.image('background', "assets/bosque.jpg");
 	game.load.image('player1', "monitos/sprite-babymario.png");
 	game.load.image('player2', "monitos/sprite-babyluigi.png");
-	game.load.image('plataforma', "assets/platform.png");
+	game.load.image('plataforma', "assets/plataformaB.png");
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
