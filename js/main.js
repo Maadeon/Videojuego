@@ -16,8 +16,8 @@ var mainState = {
 	//el preload es donde se cargan las imagenes antes del juego
 	preload:function(){
 	game.load.image('background', "assets/bosque.jpg");
-	game.load.image('player1', "monitos/sprite-babymario.png");
-	game.load.image('player2', "monitos/sprite-babyluigi.png");
+	game.load.spritesheet('gallina', 'monitos/sprite_gallina.png', 50, 50, 2);
+	game.load.spritesheet('gallina2', 'monitos/sprite_gallinaamarilla.png', 50, 50, 2)
 	game.load.image('plataforma', "assets/plataformaB.png");
 	},
 	//el create es donde decidimos que sale en la pantalla
@@ -30,11 +30,15 @@ var mainState = {
 	game.physics.arcade.gravity.x = -10000;
 	
 	//creacion del jugador y establecimiento de las funciones de fisica y donde aparecen en la pantalla
-	player1 = game.add.sprite(game.world.centerX - 400,game.world.centerY -65, 'player1');
+	player1 = game.add.sprite(game.world.centerX - 400,game.world.centerY -65, 'gallina');
+	player1.animations.add('fly', [0, 1]);
+	player1.animations.play('fly', 10, true);
 	game.physics.enable(player1,Phaser.Physics.ARCADE);
 	player1.body.collideWorldBounds = true;
 
-	player2 = game.add.sprite(game.world.centerX - 400,game.world.centerY + 400, 'player2');
+	player2 = game.add.sprite(game.world.centerX - 400,game.world.centerY + 400, 'gallina2');
+	player2.animations.add('fly', [0, 1]);
+	player2.animations.play('fly', 10, true);
 	game.physics.enable(player2,Phaser.Physics.ARCADE);
 	player2.body.collideWorldBounds = true;
 	
