@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'gamediv');
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game');
 // variables en general
 var background;
 
@@ -9,7 +9,12 @@ var jumpButton1;
 var RightButton1;
 var LeftButton1;
 
+var enemies;
+var enemyRate = 1000;
+var enemyTimer = 0;
+
 var plataforma;
+
 
 
 var mainState = {
@@ -19,6 +24,7 @@ var mainState = {
 	game.load.image('player1', "monitos/sprite-babymario.png");
 	game.load.image('player2', "monitos/sprite-babyluigi.png");
 	game.load.image('plataforma', "assets/plataformaB.png");
+	game.load.image("Enemies", "monitos/bat/sprite_bat1.png");
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
@@ -26,17 +32,23 @@ var mainState = {
 	//Funcion predeterminada para las "arrow keys"
 	cursors = game.input.keyboard.createCursorKeys();
 	//gravedad que afecta a los jugadores en los ejes X y Y
-	game.physics.arcade.gravity.y = 10000;
-	game.physics.arcade.gravity.x = -10000;
+	
+	enemies = this.add.physicsGroup();
+	enemies.setAll('checkWorldBounds', true);
+	enemies.setAll('onOutOfBoundsKill', true);
 	
 	//creacion del jugador y establecimiento de las funciones de fisica y donde aparecen en la pantalla
 	player1 = game.add.sprite(game.world.centerX - 400,game.world.centerY -65, 'player1');
 	game.physics.enable(player1,Phaser.Physics.ARCADE);
 	player1.body.collideWorldBounds = true;
+	player1.body.gravity.x = -10000;
+	player1.body.gravity.y = 10000;
 
 	player2 = game.add.sprite(game.world.centerX - 400,game.world.centerY + 400, 'player2');
 	game.physics.enable(player2,Phaser.Physics.ARCADE);
 	player2.body.collideWorldBounds = true;
+	player2.body.gravity.x = -10000;
+	player2.body.gravity.y = 10000;
 	
 	//DANGER!!!! NO MOVER, TOCAR, CAMBIAR, NADA, OSEA NADA 
 	plataforma = this.add.physicsGroup();
@@ -47,11 +59,11 @@ var mainState = {
 	plataforma.setAll('body.allowGravity', false);
 	plataforma.setAll('body.immovable', true);
 	//HASTA ACA!!!! TODO LO DE EN MEDIO
-	
+
 	//Debido a que las letras del teclado no estan predeterminadas se deben seleccionar una a la vez
 	jumpButton1 = game.input.keyboard.addKey(Phaser.Keyboard.W);
 	RightButton1 = game.input.keyboard.addKey(Phaser.Keyboard.D);
-	LeftButton1 = game.input.keyboard.addKey(Phaser.Keyboard.A);
+	LeftButton1 = game.input.keyboard.addKey(Phaser.Keyboard.A);            
 
 	},
 	//el update es donde se establece que sucede cuando el usuario realiza algo
@@ -64,10 +76,16 @@ var mainState = {
 		player2.body.velocity.y = 0;
 		player2.body.velocity.x = 0;
 
+		enemies.setAll('body.velocity.x', -400);
+
 		//NO TOCAR, Es lo que no permite a los jugadores cruzarse
 		this.physics.arcade.collide(player1, plataforma, this.setFriction, null, this);
 		this.physics.arcade.collide(player2, plataforma, this.setFriction, null, this);
 
+		//Llama la funcion para cuando se choca con el enemigo
+		this.physics.arcade.overlap(player1, enemies, enemyHit, null, this);
+		this.physics.arcade.overlap(player2, enemies, enemyHit, null, this);
+		
 		//movimientos del jugador 1
 		if(jumpButton1.isDown)
 	    {
@@ -94,9 +112,33 @@ var mainState = {
 	    {
 	        player2.body.velocity.y = -500;
 	    }
-	}
 
+	    if(enemyTimer < game.time.now) {
+	    	createEnemy();
+	    	enemyTimer = game.time.now + enemyRate;
+	    }
+
+	},
+	
+}
+
+function createEnemy() {
+
+    var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
+    enemies.create(game.world.width, y1,'Enemies');
+	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
+	enemies.create(game.world.width, y2,'Enemies');
+}
+
+function enemyHit(player1, enemy){
+	player1.kill();
+	enemy.kill();
+}
+function enemyHit(player2, enemy){
+	player2.kill();
+	enemy.kill();
 }
 
 game.state.add('mainState', mainState);
 game.state.start('mainState');
+
