@@ -9,13 +9,29 @@ var jumpButton1;
 var RightButton1;
 var LeftButton1;
 
-var enemies;
+var RestartButton;
+
+var enemies1;
+var enemies1velocity = -400;
+var enemies2;
+var enemies2velocity = -400;
 var enemyRate = 1000;
 var enemyTimer = 0;
 
 var plataforma;
 
+var coins1;
+var coins1velocity = -400;
+var coins2;
+var coins2velocity = -400;
+var coinRate = 1200;
+var coinTimer = 0;
 
+var score1 = 0;
+var score2 = 0;
+
+var gameover = 0;
+var kirby;
 
 var mainState = {
 	//el preload es donde se cargan las imagenes antes del juego
@@ -25,17 +41,40 @@ var mainState = {
 	game.load.spritesheet('gallina2', 'monitos/sprite_gallinaamarilla.png', 50, 50, 2)
 	game.load.image('plataforma', "assets/plataformaB.png");
 	game.load.image("Enemies", "monitos/bat/sprite_bat1.png");
+	game.load.image("coin", "monitos/sprite-charizard.png");
+
+	game.load.audio('m', 'assets/musica/Done.mp3');
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
+	kirby = game.add.audio('m');
+	kirby.play();
 	background = game.add.tileSprite(0,0,800,600,'background');
+	score1Text = game.add.text(10, 10,"Score: 0", {
+		fill:"white"
+	});
+	score2Text = game.add.text(10, 325,"Score: 0", {
+		fill:"white"
+	});
 	//Funcion predeterminada para las "arrow keys"
 	cursors = game.input.keyboard.createCursorKeys();
 	//gravedad que afecta a los jugadores en los ejes X y Y
 	
-	enemies = this.add.physicsGroup();
-	enemies.setAll('checkWorldBounds', true);
-	enemies.setAll('onOutOfBoundsKill', true);
+	enemies1 = this.add.physicsGroup();
+	enemies1.setAll('checkWorldBounds', true);
+	enemies1.setAll('onOutOfBoundsKill', true);
+
+	enemies2 = this.add.physicsGroup();
+	enemies2.setAll('checkWorldBounds', true);
+	enemies2.setAll('onOutOfBoundsKill', true);
+
+	coins1 = this.add.physicsGroup();
+	coins1.setAll('checkWorldBounds', true);
+	coins1.setAll('onOutOfBoundsKill', true);
+
+	coins2 = this.add.physicsGroup();
+	coins2.setAll('checkWorldBounds', true);
+	coins2.setAll('onOutOfBoundsKill', true);
 	
 	//creacion del jugador y establecimiento de las funciones de fisica y donde aparecen en la pantalla
 	player1 = game.add.sprite(game.world.centerX - 400,game.world.centerY -65, 'gallina');
@@ -67,28 +106,36 @@ var mainState = {
 	//Debido a que las letras del teclado no estan predeterminadas se deben seleccionar una a la vez
 	jumpButton1 = game.input.keyboard.addKey(Phaser.Keyboard.W);
 	RightButton1 = game.input.keyboard.addKey(Phaser.Keyboard.D);
-	LeftButton1 = game.input.keyboard.addKey(Phaser.Keyboard.A);            
+	LeftButton1 = game.input.keyboard.addKey(Phaser.Keyboard.A);
+
+	RestartButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);         
 
 	},
 	//el update es donde se establece que sucede cuando el usuario realiza algo
 	update:function(){
 		//Permite que el fondo sea "scrolling"
-		background.tilePosition.x-= 3.5;
+		background.autoScroll(-350, 0);
 		//Indica que cuando este en reposo el jugador no se mueva
 		player1.body.velocity.y = 0;
 		player1.body.velocity.x = 0;
 		player2.body.velocity.y = 0;
 		player2.body.velocity.x = 0;
 
-		enemies.setAll('body.velocity.x', -400);
+		enemies1.setAll('body.velocity.x', enemies1velocity);
+		enemies2.setAll('body.velocity.x', enemies2velocity);
+		coins1.setAll('body.velocity.x', coins1velocity);
+		coins2.setAll('body.velocity.x', coins2velocity);
 
 		//NO TOCAR, Es lo que no permite a los jugadores cruzarse
 		this.physics.arcade.collide(player1, plataforma, this.setFriction, null, this);
 		this.physics.arcade.collide(player2, plataforma, this.setFriction, null, this);
 
 		//Llama la funcion para cuando se choca con el enemigo
-		this.physics.arcade.overlap(player1, enemies, enemyHit, null, this);
-		this.physics.arcade.overlap(player2, enemies, enemyHit, null, this);
+		this.physics.arcade.overlap(player1, enemies1, enemyHit1, null, this);
+		this.physics.arcade.overlap(player2, enemies2, enemyHit2, null, this);
+
+		this.physics.arcade.overlap(player1, coins1, coinHit1, null, this);
+		this.physics.arcade.overlap(player2, coins2, coinHit2, null, this);
 		
 		//movimientos del jugador 1
 		if(jumpButton1.isDown)
@@ -118,29 +165,108 @@ var mainState = {
 	    }
 
 	    if(enemyTimer < game.time.now) {
-	    	createEnemy();
+	    	createEnemy1();
+	    	createEnemy2();
 	    	enemyTimer = game.time.now + enemyRate;
+	    }
+	    if(coinTimer < game.time.now) {
+	    	createCoin1();
+	    	createCoin2();
+	    	coinTimer = game.time.now + coinRate;
+	    }
+	    if(gameover==2){
+	    	background.autoScroll(0, 0);
+	    	game.sound.play('done');
+			enemyTimer = Number.MAX_VALUE;
+			coinTimer = Number.MAX_VALUE;
+			if(RestartButton.isDown)
+			{
+				shutdown();
+				game.state.restart();
+			}
 	    }
 
 	},
 	
 }
 
-function createEnemy() {
+function createEnemy1() {
 
     var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
-    enemies.create(game.world.width, y1,'Enemies');
-	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
-	enemies.create(game.world.width, y2,'Enemies');
+    enemies1.create(game.world.width, y1,'Enemies');
+    if(score1>14){
+		var y2 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
+		enemies1.create(game.world.width, y2,'Enemies');
+	}
+	if(score1>29){
+		enemies1velocity=-500;
+	}
+	
 }
 
-function enemyHit(player1, enemy){
+function createEnemy2() {
+
+	var y1 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
+	enemies2.create(game.world.width, y1,'Enemies');
+	if(score2>14){
+		var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
+		enemies2.create(game.world.width, y2,'Enemies');
+	}
+	if(score2>29){
+		enemies2velocity=-500;
+	}
+}
+
+function createCoin1() {
+
+    var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
+    coins1.create(game.world.width, y1,'coin');
+
+}
+function createCoin2() {
+
+	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
+	coins2.create(game.world.width, y2,'coin');
+}
+
+function enemyHit1(player1, enemy){
 	player1.kill();
 	enemy.kill();
+	coins1velocity=0;
+	enemies1velocity=0;
+	gameover++;
 }
-function enemyHit(player2, enemy){
+function enemyHit2(player2, enemy){
 	player2.kill();
 	enemy.kill();
+	coins2velocity=0;
+	enemies2velocity=0;
+	gameover++;
+}
+function coinHit1(player1, coin){
+	score1++;
+	coin.kill();
+	score1Text.text="Score: " +score1;
+
+}
+function coinHit2(player2, coin){
+	score2++;
+	coin.kill();
+	score2Text.text="Score: " +score2;
+}
+function shutdown(){
+	enemies1velocity = -400;
+	enemies2velocity = -400;
+	coins1velocity = -400;
+	coins2velocity = -400;
+	enemyRate = 1000;
+	enemyTimer = -1000;
+	coinRate = 1200;
+	coinTimer = -1000;
+	score1 = 0;
+	score2 = 0;
+	gameover = 0;
+
 }
 
 game.state.add('mainState', mainState);
