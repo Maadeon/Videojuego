@@ -19,6 +19,7 @@ var enemyRate = 1000;
 var enemyTimer = 0;
 
 var plataforma;
+var plataforma2;
 
 var coins1;
 var coins1velocity = -400;
@@ -38,10 +39,10 @@ var mainState = {
 	preload:function(){
 	game.load.image('background', "assets/bosque.jpg");
 	game.load.spritesheet('gallina', 'monitos/sprite_gallina.png', 50, 50, 2);
-	game.load.spritesheet('gallina2', 'monitos/sprite_gallinaamarilla.png', 50, 50, 2)
+	game.load.spritesheet('gallina2', 'monitos/sprite_gallinacafe.png', 50, 50, 2)
 	game.load.image('plataforma', "assets/plataformaB.png");
-	game.load.image("Enemies", "monitos/bat/sprite_bat1.png");
-	game.load.image("coin", "monitos/sprite-charizard.png");
+	game.load.spritesheet('bat', "monitos/bat.png", 50, 50, 2);
+	game.load.spritesheet("coin", "monitos/sprite_coin.png", 50, 50, 6);
 
 	game.load.audio('m', 'assets/musica/Done.mp3');
 	},
@@ -59,10 +60,12 @@ var mainState = {
 	//Funcion predeterminada para las "arrow keys"
 	cursors = game.input.keyboard.createCursorKeys();
 	//gravedad que afecta a los jugadores en los ejes X y Y
-	
+
+	//var enemiesgroup1 = game.add.group();
 	enemies1 = this.add.physicsGroup();
 	enemies1.setAll('checkWorldBounds', true);
 	enemies1.setAll('onOutOfBoundsKill', true);
+	//enemiesgroup1.add(enemies1);
 
 	enemies2 = this.add.physicsGroup();
 	enemies2.setAll('checkWorldBounds', true);
@@ -85,7 +88,7 @@ var mainState = {
 	player1.body.gravity.x = -10000;
 	player1.body.gravity.y = 10000;
 
-	player2 = game.add.sprite(game.world.centerX - 400,game.world.centerY + 400, 'gallina2');
+	player2 = game.add.sprite(game.world.centerX - 400,game.world.centerY + 225, 'gallina2');
 	player2.animations.add('fly', [0, 1]);
 	player2.animations.play('fly', 10, true);
 	game.physics.enable(player2,Phaser.Physics.ARCADE);
@@ -101,6 +104,14 @@ var mainState = {
 	
 	plataforma.setAll('body.allowGravity', false);
 	plataforma.setAll('body.immovable', true);
+
+	plataforma2 = this.add.physicsGroup();
+	for(var k = -25; k< 800; k+=100){
+	plataforma2.create(k, 575, 'plataforma');
+	}
+	
+	plataforma2.setAll('body.allowGravity', false);
+	plataforma2.setAll('body.immovable', true);
 	//HASTA ACA!!!! TODO LO DE EN MEDIO
 
 	//Debido a que las letras del teclado no estan predeterminadas se deben seleccionar una a la vez
@@ -129,7 +140,7 @@ var mainState = {
 		//NO TOCAR, Es lo que no permite a los jugadores cruzarse
 		this.physics.arcade.collide(player1, plataforma, this.setFriction, null, this);
 		this.physics.arcade.collide(player2, plataforma, this.setFriction, null, this);
-
+		this.physics.arcade.collide(player2, plataforma2, this.setFriction, null, this);
 		//Llama la funcion para cuando se choca con el enemigo
 		this.physics.arcade.overlap(player1, enemies1, enemyHit1, null, this);
 		this.physics.arcade.overlap(player2, enemies2, enemyHit2, null, this);
@@ -193,10 +204,19 @@ var mainState = {
 function createEnemy1() {
 
     var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
-    enemies1.create(game.world.width, y1,'Enemies');
+    enemies1.create(game.world.width, y1,'bat');
+    //enemies1 = game.add.sprite(game.world.width, y1,'bat');
+    //enemies1.animations.add('fly', [0, 1]);
+	//enemies1.animations.play('fly', 10, true);
+    
     if(score1>14){
 		var y2 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
-		enemies1.create(game.world.width, y2,'Enemies');
+   		//enemies1 = game.add.sprite(game.world.width, y1,'bat');
+    	//enemies1.animations.add('fly', [0, 1]);
+		//enemies1.animations.play('fly', 10, true);
+		enemies1.create(game.world.width, y2,'bat');
+		
+
 	}
 	if(score1>29){
 		enemies1velocity=-500;
@@ -206,11 +226,11 @@ function createEnemy1() {
 
 function createEnemy2() {
 
-	var y1 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
-	enemies2.create(game.world.width, y1,'Enemies');
+	var y1 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
+	enemies2.create(game.world.width, y1,'bat');
 	if(score2>14){
-		var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
-		enemies2.create(game.world.width, y2,'Enemies');
+		var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
+		enemies2.create(game.world.width, y2,'bat');
 	}
 	if(score2>29){
 		enemies2velocity=-500;
@@ -220,12 +240,13 @@ function createEnemy2() {
 function createCoin1() {
 
     var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
+    
     coins1.create(game.world.width, y1,'coin');
 
 }
 function createCoin2() {
 
-	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +260);
+	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
 	coins2.create(game.world.width, y2,'coin');
 }
 
