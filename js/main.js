@@ -49,7 +49,6 @@ var mainState = {
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
 	kirby = game.add.audio('done');
-	kirby.play();
 	background = game.add.tileSprite(0,0,800,600,'background');
 	score1Text = game.add.text(10, 10,"Score: 0", {
 		fill:"white"
@@ -199,9 +198,12 @@ var mainState = {
 	    }
 	    if(gameover==2){
 	    	background.autoScroll(0, 0);
-	    	game.sound.play('done');
+	    	kirby.play();
 			enemyTimer = Number.MAX_VALUE;
 			coinTimer = Number.MAX_VALUE;
+			gameoverText = game.add.text(335, 290,"Gameover", {
+				fill:"white"
+			});
 			if(RestartButton.isDown)
 			{
 				shutdown();
