@@ -30,7 +30,7 @@ var coinTimer = 0;
 var score1 = 0;
 var score2 = 0;
 
-var gameover = 0;
+var gameover = -1;
 var kirby;
 
 var mainState = {
@@ -43,11 +43,11 @@ var mainState = {
 	game.load.image("Enemies", "monitos/bat/sprite_bat1.png");
 	game.load.image("coin", "monitos/sprite-charizard.png");
 
-	game.load.audio('m', 'assets/musica/Done.mp3');
+	game.load.audio('done', 'assets/musica/Done.mp3');
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
-	kirby = game.add.audio('m');
+	kirby = game.add.audio('done');
 	kirby.play();
 	background = game.add.tileSprite(0,0,800,600,'background');
 	score1Text = game.add.text(10, 10,"Score: 0", {
@@ -137,6 +137,18 @@ var mainState = {
 		this.physics.arcade.overlap(player1, coins1, coinHit1, null, this);
 		this.physics.arcade.overlap(player2, coins2, coinHit2, null, this);
 		
+		//Main Menu/Start
+		if(gameover==-1)
+		{
+			score1Text.visible = false;
+			score2Text.visible = false; 
+			Start();
+			if(RestartButton.isDown)
+			{
+				shutdown();
+				game.state.restart();
+			}
+		}
 		//movimientos del jugador 1
 		if(jumpButton1.isDown)
 	    {
@@ -253,6 +265,15 @@ function coinHit2(player2, coin){
 	score2++;
 	coin.kill();
 	score2Text.text="Score: " +score2;
+}
+function Start(){
+	player1.kill();
+	player2.kill();
+	background.autoScroll(0, 0);
+	game.sound.play('done');
+	enemyTimer = Number.MAX_VALUE;
+	coinTimer = Number.MAX_VALUE;
+
 }
 function shutdown(){
 	enemies1velocity = -400;
