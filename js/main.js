@@ -42,7 +42,7 @@ var mainState = {
 	game.load.spritesheet('gallina2', 'monitos/sprite_gallinacafe.png', 50, 50, 2)
 	game.load.image('plataforma', "assets/plataformaB.png");
 	game.load.spritesheet('bat', "monitos/bat.png", 50, 50, 2);
-	game.load.spritesheet("coin", "monitos/sprite_coin.png", 50, 50, 6);
+	game.load.spritesheet("coin", "monitos/coinsmall.png", 32, 32, 6);
 
 	game.load.audio('done', 'assets/musica/Done.mp3');
 	},
@@ -240,16 +240,15 @@ function createEnemy1() {
 
     var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
     enemies1.create(game.world.width, y1,'bat');
-    //enemies1 = game.add.sprite(game.world.width, y1,'bat');
-    //enemies1.animations.add('fly', [0, 1]);
-	//enemies1.animations.play('fly', 10, true);
+    enemies1.callAll('animations.add', 'animations', 'fly', [0,1], 6, true);
+    enemies1.callAll('animations.play', 'animations', 'fly');
     
     if(score1>14){
 		var y2 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
-   		//enemies1 = game.add.sprite(game.world.width, y1,'bat');
-    	//enemies1.animations.add('fly', [0, 1]);
-		//enemies1.animations.play('fly', 10, true);
 		enemies1.create(game.world.width, y2,'bat');
+		enemies1.callAll('animations.add', 'animations', 'fly', [0,1], 6, true);
+    	enemies1.callAll('animations.play', 'animations', 'fly');
+
 		
 
 	}
@@ -263,9 +262,14 @@ function createEnemy2() {
 
 	var y1 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
 	enemies2.create(game.world.width, y1,'bat');
+	enemies2.callAll('animations.add', 'animations', 'fly', [0,1], 6, true);
+    enemies2.callAll('animations.play', 'animations', 'fly');
+
 	if(score2>14){
 		var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
 		enemies2.create(game.world.width, y2,'bat');
+		enemies2.callAll('animations.add', 'animations', 'fly', [0,1], 6, true);
+    	enemies2.callAll('animations.play', 'animations', 'fly');
 	}
 	if(score2>29){
 		enemies2velocity=-500;
@@ -275,14 +279,17 @@ function createEnemy2() {
 function createCoin1() {
 
     var y1 = this.game.rnd.integerInRange(0, game.world.centerY - 55);
-    
     coins1.create(game.world.width, y1,'coin');
-
+    coins1.callAll('animations.add', 'animations', 'spin', [0,1,2,3,4,5], 6, true);
+    coins1.callAll('animations.play', 'animations', 'spin');
 }
 function createCoin2() {
 
 	var y2 = this.game.rnd.integerInRange(game.world.centerY + 50, game.world.centerY +225);
 	coins2.create(game.world.width, y2,'coin');
+	coins2.callAll('animations.add', 'animations', 'spin', [0,1,2,3,4,5], 6, true);
+    coins2.callAll('animations.play', 'animations', 'spin');
+
 }
 
 function enemyHit1(player1, enemy){
