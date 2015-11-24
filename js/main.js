@@ -197,14 +197,17 @@ var mainState = {
 	    	coinTimer = game.time.now + coinRate;
 	    }
 	    if(gameover==2){
-	    	background.autoScroll(0, 0);
 	    	kirby.play();
 			enemyTimer = Number.MAX_VALUE;
 			coinTimer = Number.MAX_VALUE;
-			gameoverText = game.add.text(335, 290,"Gameover", {
+			gameover = 5;
+	    }
+	    if (gameover == 5) {
+	    	background.autoScroll(0, 0);
+	    	gameoverText = game.add.text(335, 290,"Gameover", {
 				fill:"white"
 			});
-			if(RestartButton.isDown)
+	    	if(RestartButton.isDown)
 			{
 				shutdown();
 				game.state.restart();
@@ -293,7 +296,6 @@ function Start(){
 	player1.kill();
 	player2.kill();
 	background.autoScroll(0, 0);
-	game.sound.play('done');
 	enemyTimer = Number.MAX_VALUE;
 	coinTimer = Number.MAX_VALUE;
 
