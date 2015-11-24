@@ -204,6 +204,24 @@ var mainState = {
 			gameoverText = game.add.text(335, 290,"Gameover", {
 				fill:"white"
 			});
+			if(score1>score2)
+			{
+				winner1Text = game.add.text(310, 340,"Player 1 wins!!!", {
+					fill:"white"
+				});
+			}
+			if(score2>score1)
+			{
+				winner2Text = game.add.text(310, 340,"Player 2 wins!!!", {
+					fill:"white"
+				});
+			}
+			if(score1==score2)
+			{
+				winnerText = game.add.text(335, 340,"Draw losers", {
+					fill:"white"
+				});
+			}
 			if(RestartButton.isDown)
 			{
 				shutdown();
