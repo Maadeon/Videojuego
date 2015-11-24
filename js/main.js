@@ -207,7 +207,6 @@ var mainState = {
 	    	gameoverText = game.add.text(335, 290,"Gameover", {
 				fill:"white"
 			});
-<<<<<<< HEAD
 			if(score1>score2)
 			{
 				winner1Text = game.add.text(310, 340,"Player 1 wins!!!", {
@@ -227,9 +226,6 @@ var mainState = {
 				});
 			}
 			if(RestartButton.isDown)
-=======
-	    	if(RestartButton.isDown)
->>>>>>> 48f93a73b105053cf6611f5e27bc21e265ae99b4
 			{
 				shutdown();
 				game.state.restart();
