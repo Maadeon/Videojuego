@@ -63,13 +63,13 @@ var mainState = {
 	score1Text = game.add.text(10, 10,"Score: 0", {
 		fill:"white"
 	});
-	vidas1Text = game.add.text(125, 10,"<3: 3", {
+	vidas1Text = game.add.text(135, 10,"<3: 3", {
 		fill:"white"
 	});
 	score2Text = game.add.text(10, 325,"Score: 0", {
 		fill:"white"
 	});
-	vidas2Text = game.add.text(125, 325,"<3: 3", {
+	vidas2Text = game.add.text(135, 325,"<3: 3", {
 		fill:"white"
 	});
 	//Funcion predeterminada para las "arrow keys"
