@@ -45,10 +45,12 @@ var mainState = {
 	game.load.spritesheet("coin", "monitos/coinsmall.png", 32, 32, 6);
 
 	game.load.audio('done', 'assets/musica/Done.mp3');
+	game.load.audio('smack', 'assets/musica/smack.mp3');
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
 	kirby = game.add.audio('done');
+	hit = game.add.audio('smack');
 	background = game.add.tileSprite(0,0,800,600,'background');
 	score1Text = game.add.text(10, 10,"Score: 0", {
 		fill:"white"
@@ -293,6 +295,7 @@ function createCoin2() {
 }
 
 function enemyHit1(player1, enemy){
+	hit.play();
 	player1.kill();
 	enemy.kill();
 	coins1velocity=0;
@@ -300,6 +303,7 @@ function enemyHit1(player1, enemy){
 	gameover++;
 }
 function enemyHit2(player2, enemy){
+	hit.play();
 	player2.kill();
 	enemy.kill();
 	coins2velocity=0;
