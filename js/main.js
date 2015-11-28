@@ -53,6 +53,8 @@ var mainState = {
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
+	vidas1 = 3;
+	vidas2 = 3;
 	kirby = game.add.audio('done');
 	hit = game.add.audio('smack');
 	coinSound = game.add.audio('coin');
