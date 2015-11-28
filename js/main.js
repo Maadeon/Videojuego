@@ -31,6 +31,9 @@ var coinTimer = 0;
 var score1 = 0;
 var score2 = 0;
 
+var vidas1 = 3;
+var vidas2 = 3;
+
 var gameover = -1;
 var kirby;
 
@@ -46,16 +49,25 @@ var mainState = {
 
 	game.load.audio('done', 'assets/musica/Done.mp3');
 	game.load.audio('smack', 'assets/musica/smack.mp3');
+	game.load.audio('coin', 'assets/musica/coin.mp3');
 	},
 	//el create es donde decidimos que sale en la pantalla
 	create:function(){
 	kirby = game.add.audio('done');
 	hit = game.add.audio('smack');
+	coinSound = game.add.audio('coin');
+
 	background = game.add.tileSprite(0,0,800,600,'background');
 	score1Text = game.add.text(10, 10,"Score: 0", {
 		fill:"white"
 	});
+	vidas1Text = game.add.text(125, 10,"<3: 3", {
+		fill:"white"
+	});
 	score2Text = game.add.text(10, 325,"Score: 0", {
+		fill:"white"
+	});
+	vidas2Text = game.add.text(125, 325,"<3: 3", {
 		fill:"white"
 	});
 	//Funcion predeterminada para las "arrow keys"
@@ -153,7 +165,9 @@ var mainState = {
 		if(gameover==-1)
 		{
 			score1Text.visible = false;
-			score2Text.visible = false; 
+			score2Text.visible = false;
+			vidas1Text.visible = false;
+			vidas2Text.visible = false;  
 			Start();
 			if(RestartButton.isDown)
 			{
@@ -296,27 +310,41 @@ function createCoin2() {
 
 function enemyHit1(player1, enemy){
 	hit.play();
-	player1.kill();
-	enemy.kill();
-	coins1velocity=0;
-	enemies1velocity=0;
-	gameover++;
+	vidas1--;
+	if(vidas1 < 1){
+		player1.kill();
+		coins1velocity=0;
+		enemies1velocity=0;
+		vidas1Text.text="<3: " +vidas1;
+		gameover++;
+	} else {
+		enemy.kill();
+		vidas1Text.text="<3: " +vidas1;
+	}
 }
 function enemyHit2(player2, enemy){
 	hit.play();
-	player2.kill();
-	enemy.kill();
-	coins2velocity=0;
-	enemies2velocity=0;
-	gameover++;
+	vidas2--;
+	if(vidas2 < 1){
+		player2.kill();
+		coins2velocity=0;
+		enemies2velocity=0;
+		vidas2Text.text="<3: " +vidas2;
+		gameover++;
+	} else {
+		enemy.kill();
+		vidas2Text.text="<3: " +vidas2;
+	}
 }
 function coinHit1(player1, coin){
+	coinSound.play();
 	score1++;
 	coin.kill();
 	score1Text.text="Score: " +score1;
 
 }
 function coinHit2(player2, coin){
+	coinSound.play();
 	score2++;
 	coin.kill();
 	score2Text.text="Score: " +score2;
