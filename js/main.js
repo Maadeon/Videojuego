@@ -4,6 +4,8 @@ var background;
 
 var player1;
 var player2;
+var heart1;
+var heart2;
 
 var jumpButton1;
 var RightButton1;
@@ -41,6 +43,7 @@ var mainState = {
 	//el preload es donde se cargan las imagenes antes del juego
 	preload:function(){
 	game.load.image('background', "assets/bosque.jpg");
+	game.load.spritesheet('heart', 'monitos/heart.png', 50, 50, 2);
 	game.load.spritesheet('gallina', 'monitos/sprite_gallina.png', 50, 50, 2);
 	game.load.spritesheet('gallina2', 'monitos/sprite_gallinacafe.png', 50, 50, 2)
 	game.load.image('plataforma', "assets/plataformaB.png");
@@ -63,13 +66,13 @@ var mainState = {
 	score1Text = game.add.text(10, 10,"Score: 0", {
 		fill:"white"
 	});
-	vidas1Text = game.add.text(135, 10,"<3: 3", {
+	vidas1Text = game.add.text(135, 10,"     x 3", {
 		fill:"white"
 	});
 	score2Text = game.add.text(10, 325,"Score: 0", {
 		fill:"white"
 	});
-	vidas2Text = game.add.text(135, 325,"<3: 3", {
+	vidas2Text = game.add.text(135, 325,"     x 3", {
 		fill:"white"
 	});
 	//Funcion predeterminada para las "arrow keys"
@@ -95,6 +98,8 @@ var mainState = {
 	coins2.setAll('onOutOfBoundsKill', true);
 	
 	//creacion del jugador y establecimiento de las funciones de fisica y donde aparecen en la pantalla
+	heart1 = game.add.sprite(game.world.centerX - 265,game.world.centerY -292, 'heart');
+	heart2 = game.add.sprite(game.world.centerX - 265,game.world.centerY - -22, 'heart');
 	player1 = game.add.sprite(game.world.centerX - 400,game.world.centerY -65, 'gallina');
 	player1.animations.add('fly', [0, 1]);
 	player1.animations.play('fly', 10, true);
@@ -317,11 +322,11 @@ function enemyHit1(player1, enemy){
 		player1.kill();
 		coins1velocity=0;
 		enemies1velocity=0;
-		vidas1Text.text="<3: " +vidas1;
+		vidas1Text.text="     x " +vidas1;
 		gameover++;
 	} else {
 		enemy.kill();
-		vidas1Text.text="<3: " +vidas1;
+		vidas1Text.text="     x " +vidas1;
 	}
 }
 function enemyHit2(player2, enemy){
@@ -331,11 +336,11 @@ function enemyHit2(player2, enemy){
 		player2.kill();
 		coins2velocity=0;
 		enemies2velocity=0;
-		vidas2Text.text="<3: " +vidas2;
+		vidas2Text.text="     x " +vidas2;
 		gameover++;
 	} else {
 		enemy.kill();
-		vidas2Text.text="<3: " +vidas2;
+		vidas2Text.text="     x " +vidas2;
 	}
 }
 function coinHit1(player1, coin){
@@ -354,6 +359,8 @@ function coinHit2(player2, coin){
 function Start(){
 	player1.kill();
 	player2.kill();
+	heart1.kill();
+	heart2.kill();
 	background.autoScroll(0, 0);
 	enemyTimer = Number.MAX_VALUE;
 	coinTimer = Number.MAX_VALUE;
